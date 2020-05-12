@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Girth</th>
+        <th scope="col">Height</th>
+        <th scope="col">Volume</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for tree in trees %}
+    <tr>
+        <td><a href="view/{{tree.id}}">{{ tree.Girth_in }}</a></td>
+        <td>{{ tree.Height_ft }}</td>
+        <td>{{ tree.Volume_st3 }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
