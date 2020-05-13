@@ -96,21 +96,37 @@ def api_retrieve(tree_id) -> str:
     return resp
 
 
-@app.route('/api/v1/trees/', methods=['POST'])
+@app.route('/api/v1/trees', methods=['POST'])
 def api_add() -> str:
+    content = request.json
+    cursor = mysql.get_db().cursor()
+    inputData = (content['Girth_in'], content['Height_ft'], content['Volume_ft3'])
+    sql_insert_query = """INSERT INTO tblTreeImport (Girth_in,Height_ft,Volume_ft3) VALUES (%s, %s,%s) """
+    cursor.execute(sql_insert_query, inputData)
+    mysql.get_db().commit()
     resp = Response(status=201, mimetype='application/json')
     return resp
 
 
 @app.route('/api/v1/trees/<int:tree_id>', methods=['PUT'])
 def api_edit(tree_id) -> str:
-    resp = Response(status=201, mimetype='application/json')
+    cursor = mysql.get_db().cursor()
+    content = request.json
+    inputData = (content['Girth_in'], content['Height_ft'], content['Volume_ft3'], tree_id)
+    sql_update_query = """UPDATE tblTreeImport t SET t.Girth_in = %s, t.Height_ft = %s, t.Volume_ft3 = %s WHERE t.id = %s """
+    cursor.execute(sql_update_query, inputData)
+    mysql.get_db().commit()
+    resp = Response(status=200, mimetype='application/json')
     return resp
 
 
-@app.route('/api/trees/<int:tree_id>', methods=['DELETE'])
+@app.route('/api/v1/trees/<int:tree_id>', methods=['DELETE'])
 def api_delete(tree_id) -> str:
-    resp = Response(status=210, mimetype='application/json')
+    cursor = mysql.get_db().cursor()
+    sql_delete_query = """DELETE FROM tblTreeImport WHERE id = %s """
+    cursor.execute(sql_delete_query, tree_id)
+    mysql.get_db().commit()
+    resp = Response(status=200, mimetype='application/json')
     return resp
 
 
